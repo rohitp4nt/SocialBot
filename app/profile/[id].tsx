@@ -1,451 +1,436 @@
-import { StyleSheet, View, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+
+const WINDOW_WIDTH = Dimensions.get('window').width;
+const COVER_HEIGHT = 180;
+const PROFILE_IMAGE_SIZE = 80;
 
 export default function ProfileScreen() {
-  const { id } = useLocalSearchParams();
-  const [activeTab, setActiveTab] = useState("Post");
-  
-  const tabs = ["Post", "Replies", "Media", "Articles"];
-  const bottomTabs = ["Product", "Brands", "Business", "Assets", "Patents", "Models", "Portfolio", "Events"];
+  const [activeTab, setActiveTab] = useState('Post');
+  const tabs = ['Post', 'Replies', 'Media', 'Articles'];
 
-  const windowWidth = Dimensions.get('window').width;
-  const coverHeight = 200;
-  const profilePicSize = 100;
+  const stats = [
+    { value: '394M', icon: 'bar-chart-2' },
+    { value: '72M', icon: 'heart' },
+    { value: '194', icon: 'trending-up' },
+  ];
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          {/* Cover Image */}
-          <Image
-            source={{ uri: "https://picsum.photos/800/400" }}
-            style={[styles.coverImage, { height: coverHeight }]}
-          />
-          
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      
+      <ScrollView style={styles.scrollView} bounces={false}>
+        {/* Cover Image */}
+        <Image
+          source={{ uri: '/placeholder.svg?height=180&width=400' }}
+          style={styles.coverImage}
+        />
+        
+        <View style={styles.content}>
           {/* Profile Picture */}
-          <View style={styles.profilePictureContainer}>
-            <Image
-              source={{ uri: "https://picsum.photos/400/400" }}
-              style={[styles.profilePicture, { width: profilePicSize, height: profilePicSize }]}
-            />
+          <Image
+            source={{ uri: '/placeholder.svg?height=80&width=80' }}
+            style={styles.profilePicture}
+          />
+
+          {/* Action Buttons */}
+          <View style={styles.actionButtonsContainer}>
+            <TouchableOpacity style={styles.followButton}>
+              <Text style={styles.followButtonText}>Follow</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.messageButton}>
+              <Text style={styles.messageButtonText}>Message</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.moreButton}>
+              <Text style={styles.moreButtonText}>+</Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Profile Header */}
-          <View style={styles.header}>
-            <View style={styles.nameRow}>
-              <ThemedText style={styles.name}>Elon Musk</ThemedText>
-              <Ionicons name="checkmark-circle" size={20} color="#1DA1F2" />
+          {/* Profile Info */}
+          <View style={styles.profileInfo}>
+            <View style={styles.nameContainer}>
+              <Text style={styles.name}>Elon Musk</Text>
+              <Feather name="check-circle" size={20} color="#1DA1F2" />
             </View>
-            <ThemedText style={styles.username}>@elon_musk</ThemedText>
+            <Text style={styles.username}>@elon_musk</Text>
 
-            <ThemedText style={styles.bio}>
-              Elon musk is businessman and investor and CEO of tesla, CTO of spaceX, Chairman of Neuralink, Boring Company and Technical Engineer.
-            </ThemedText>
-
-            <ThemedText style={styles.joinDate}>
-              <Ionicons name="calendar-outline" size={14} color="#536471" /> 28 June 1971
-            </ThemedText>
-
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.followButton}>
-                <ThemedText style={styles.followButtonText}>Follow</ThemedText>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageButton}>
-                <ThemedText style={styles.messageButtonText}>Message</ThemedText>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.moreButton}>
-                <Ionicons name="add" size={24} color="#1DA1F2" />
-              </TouchableOpacity>
+            {/* Following Stats */}
+            <View style={styles.followStats}>
+              <Text style={styles.followText}>
+                <Text style={styles.followNumber}>729</Text> Following
+              </Text>
+              <Text style={styles.followText}>
+                <Text style={styles.followNumber}>19M</Text> Followers
+              </Text>
             </View>
 
-            <View style={styles.statsRow}>
-              <View style={styles.stat}>
-                <ThemedText style={styles.statNumber}>729</ThemedText>
-                <ThemedText style={styles.statLabel}>Following</ThemedText>
-              </View>
-              <View style={styles.stat}>
-                <ThemedText style={styles.statNumber}>19M</ThemedText>
-                <ThemedText style={styles.statLabel}>Followers</ThemedText>
-              </View>
+            {/* Analytics */}
+            <View style={styles.analytics}>
+              {stats.map((stat, index) => (
+                <View key={index} style={styles.analyticItem}>
+                  <Text style={styles.analyticValue}>{stat.value}</Text>
+                  <Feather name={stat.icon} size={16} color="#687684" />
+                </View>
+              ))}
             </View>
 
-            <View style={styles.analyticsRow}>
-              <View style={styles.analyticItem}>
-                <ThemedText style={styles.analyticValue}>394M</ThemedText>
-                <Ionicons name="stats-chart-outline" size={20} color="#1DA1F2" />
-              </View>
-              <View style={styles.analyticItem}>
-                <ThemedText style={styles.analyticValue}>72M</ThemedText>
-                <Ionicons name="heart-outline" size={20} color="#1DA1F2" />
-              </View>
-              <View style={styles.analyticItem}>
-                <ThemedText style={styles.analyticValue}>194</ThemedText>
-                <Ionicons name="analytics-outline" size={20} color="#1DA1F2" />
-              </View>
+            {/* Bio */}
+            <Text style={styles.bio}>
+              Elon reeve musk is businessman and investor and CEO of tesla, CTO of spaceX, Chairman of Neuralink, Boring Company and Technical Engineer.
+            </Text>
+
+            {/* Join Date */}
+            <View style={styles.joinDate}>
+              <Feather name="calendar" size={16} color="#687684" />
+              <Text style={styles.joinDateText}>28 June 1971</Text>
             </View>
           </View>
 
-          {/* Main Tabs */}
-          <View style={styles.mainTabs}>
+          {/* Tabs */}
+          <View style={styles.tabsContainer}>
             {tabs.map((tab) => (
               <TouchableOpacity
                 key={tab}
-                style={[styles.mainTab, activeTab === tab && styles.activeMainTab]}
+                style={[styles.tab, activeTab === tab && styles.activeTab]}
                 onPress={() => setActiveTab(tab)}
               >
-                <ThemedText style={[styles.mainTabText, activeTab === tab && styles.activeMainTabText]}>
+                <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
                   {tab}
-                </ThemedText>
+                </Text>
+                {activeTab === tab && <View style={styles.activeTabIndicator} />}
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Posts Grid */}
-          {activeTab === "Post" && (
-            <View style={styles.postsGrid}>
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <Image
-                  key={item}
-                  source={{ uri: `https://picsum.photos/400/400?random=${item}` }}
-                  style={[styles.postImage, { width: windowWidth / 3 - 2 }]}
-                />
-              ))}
+          {/* Dashboard Quick Actions */}
+          <View style={styles.quickActions}>
+            <View style={styles.quickActionRow}>
+              <TouchableOpacity style={styles.quickActionButton}>
+                <Feather name="search" size={24} color="#000" />
+                <Text style={styles.quickActionText}>Workplace</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickActionButton}>
+                <Feather name="dollar-sign" size={24} color="#000" />
+                <Text style={styles.quickActionText}>Networth</Text>
+              </TouchableOpacity>
             </View>
-          )}
+            <View style={styles.quickActionRow}>
+              <TouchableOpacity style={styles.quickActionButton}>
+                <Feather name="credit-card" size={24} color="#000" />
+                <Text style={styles.quickActionText}>Business</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickActionButton}>
+                <Feather name="users" size={24} color="#000" />
+                <Text style={styles.quickActionText}>Employees</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {/* Dashboard Section */}
           <View style={styles.dashboardSection}>
-            <ThemedText style={styles.sectionTitle}>DashBoard</ThemedText>
-            <View style={styles.dashboardGrid}>
-              <View style={styles.dashboardRow}>
-                <TouchableOpacity style={styles.dashboardItem}>
-                  <Ionicons name="briefcase-outline" size={24} color="#1DA1F2" />
-                  <ThemedText style={styles.dashboardLabel}>Workplace</ThemedText>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.dashboardItem}>
-                  <Ionicons name="cash-outline" size={24} color="#1DA1F2" />
-                  <ThemedText style={styles.dashboardLabel}>Networth</ThemedText>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.dashboardRow}>
-                <TouchableOpacity style={styles.dashboardItem}>
-                  <Ionicons name="business-outline" size={24} color="#1DA1F2" />
-                  <ThemedText style={styles.dashboardLabel}>Business</ThemedText>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.dashboardItem}>
-                  <Ionicons name="people-outline" size={24} color="#1DA1F2" />
-                  <ThemedText style={styles.dashboardLabel}>Employees</ThemedText>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <Text style={styles.sectionTitle}>DashBoard</Text>
           </View>
 
           {/* Stocks Section */}
           <View style={styles.stocksSection}>
-            <ThemedText style={styles.sectionTitle}>Stocks</ThemedText>
-            <View style={styles.stockInfo}>
+            <Text style={styles.sectionTitle}>Stocks</Text>
+            <View style={styles.stocksContainer}>
               <View style={styles.stockColumn}>
-                <ThemedText style={styles.stockLabel}>Net Income</ThemedText>
-                <ThemedText style={styles.stockValue}>200 Million $</ThemedText>
-                <ThemedText style={styles.stockPeriod}>Monthly</ThemedText>
+                <Text style={styles.stockLabel}>Net Income</Text>
+                <Text style={styles.stockValue}>200 Million $</Text>
+                <Text style={styles.stockPeriod}>Monthly</Text>
               </View>
               <View style={styles.stockDivider} />
               <View style={styles.stockColumn}>
-                <ThemedText style={styles.stockLabel}>Brands</ThemedText>
-                <Image 
-                  source={{ uri: "https://example.com/tesla.png" }}
+                <Text style={styles.stockLabel}>Brands</Text>
+                <Image
+                  source={{ uri: '/placeholder.svg?height=40&width=40' }}
                   style={styles.brandLogo}
                 />
-                <ThemedText style={styles.brandName}>Tesla</ThemedText>
-                <ThemedText style={styles.stockChange}>+4.34 (2.45%)</ThemedText>
+                <Text style={styles.brandName}>Tesla</Text>
+                <Text style={styles.stockChange}>+4.34 (2.45%)</Text>
               </View>
             </View>
           </View>
 
-          {/* Bottom Tabs */}
-          <View style={styles.bottomTabsContainer}>
-            <View style={styles.bottomTabsRow}>
-              {bottomTabs.slice(0, 4).map((tab) => (
-                <TouchableOpacity key={tab} style={styles.bottomTab}>
-                  <ThemedText style={styles.bottomTabText}>{tab}</ThemedText>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.bottomTabsRow}>
-              {bottomTabs.slice(4).map((tab) => (
-                <TouchableOpacity key={tab} style={styles.bottomTab}>
-                  <ThemedText style={styles.bottomTabText}>{tab}</ThemedText>
-                </TouchableOpacity>
-              ))}
-            </View>
+          {/* Content Placeholders */}
+          <View style={styles.placeholders}>
+            {[1, 2, 3].map((item) => (
+              <View key={item} style={styles.placeholder} />
+            ))}
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: '#fff',
   },
   scrollView: {
     flex: 1,
   },
   coverImage: {
-    width: '100%',
-    resizeMode: 'cover',
+    width: WINDOW_WIDTH,
+    height: COVER_HEIGHT,
+    backgroundColor: '#333',
   },
-  profilePictureContainer: {
-    paddingHorizontal: 16,
-    marginTop: -50,
+  content: {
+    flex: 1,
   },
   profilePicture: {
-    borderRadius: 50,
+    width: PROFILE_IMAGE_SIZE,
+    height: PROFILE_IMAGE_SIZE,
+    borderRadius: PROFILE_IMAGE_SIZE / 2,
     borderWidth: 4,
-    borderColor: 'white',
+    borderColor: '#fff',
+    marginTop: -PROFILE_IMAGE_SIZE / 2,
+    marginLeft: 16,
   },
-  header: {
-    padding: 16,
-    paddingTop: 0,
+  actionButtonsContainer: {
+    // flexDirection: 'row',
+    // justifyContent: 'flex-end',
+    // gap: 8,
+    // paddingHorizontal: 16,
+    // marginTop: -30,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 8,
+    paddingVertical: 8,
+     marginLeft: 16, 
   },
-  nameRow: {
+  followButton: {
+    backgroundColor: '#000',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  followButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  messageButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  messageButtonText: {
+    color: '#000',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  moreButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moreButtonText: {
+    fontSize: 20,
+    color: '#000',
+    marginTop: -2,
+  },
+  profileInfo: {
+    paddingHorizontal: 16,
+    marginTop: 12,
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  username: {
+    fontSize: 15,
+    color: '#687684',
+    marginTop: 1,
+  },
+  followStats: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 12,
+  },
+  followText: {
+    fontSize: 15,
+    color: '#687684',
+  },
+  followNumber: {
+    color: '#000',
+    fontWeight: '600',
+  },
+  analytics: {
+    flexDirection: 'row',
+    gap: 24,
+    marginTop: 12,
+  },
+  analyticItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  analyticValue: {
+    fontSize: 15,
+    color: '#000',
+  },
+  bio: {
+    fontSize: 15,
+    lineHeight: 20,
+    marginTop: 12,
+    color: '#000',
+  },
+  joinDate: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     marginTop: 12,
   },
-  name: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#000",
+  joinDateText: {
+    fontSize: 15,
+    color: '#687684',
   },
-  username: {
-    fontSize: 14,
-    color: "#536471",
-    marginTop: 4,
-  },
-  bio: {
-    fontSize: 14,
-    color: "#000",
-    marginTop: 12,
-    lineHeight: 20,
-  },
-  joinDate: {
-    fontSize: 14,
-    color: "#536471",
-    marginTop: 12,
-  },
-  actionButtons: {
-    flexDirection: "row",
+  tabsContainer: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EFF3F4',
     marginTop: 16,
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 16,
+    position: 'relative',
+    
+  },
+  tabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#687684',
+  },
+  activeTabText: {
+    color: '#000',
+  },
+  activeTabIndicator: {
+    position: 'absolute',
+    bottom: -1,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: 'black',
+  },
+  placeholders: {
+    padding: 16,
+  },
+  placeholder: {
+    height: 120,
+    backgroundColor: '#F7F7F7',
+    marginBottom: 16,
+    borderRadius: 8,
+  },
+  quickActions: {
+    padding: 16,
+    gap: 12,
+  },
+  quickActionRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  quickActionButton: {
+    flex: 1,
+    backgroundColor: '#f7f7f7',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
   },
-  followButton: {
-    backgroundColor: "#1DA1F2",
-    paddingHorizontal: 20,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  followButtonText: {
-    color: "white",
-    fontWeight: "500",
+  quickActionText: {
     fontSize: 14,
-  },
-  messageButton: {
-    backgroundColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#1DA1F2",
-  },
-  messageButtonText: {
-    color: "#1DA1F2",
-    fontWeight: "500",
-    fontSize: 14,
-  },
-  moreButton: {
-    backgroundColor: "white",
-    padding: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#1DA1F2",
-  },
-  statsRow: {
-    flexDirection: "row",
-    marginTop: 16,
-    gap: 20,
-  },
-  stat: {
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#000",
-  },
-  statLabel: {
-    fontSize: 13,
-    color: "#536471",
-  },
-  analyticsRow: {
-    flexDirection: "row",
-    marginTop: 16,
-    gap: 20,
-  },
-  analyticItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  analyticValue: {
-    fontSize: 13,
-    color: "#000",
-  },
-  mainTabs: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#EFF3F4",
-    backgroundColor: "white",
-  },
-  mainTab: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
-  },
-  activeMainTab: {
-    borderBottomColor: "#1DA1F2",
-  },
-  mainTabText: {
-    color: "#536471",
-    fontWeight: "500",
-  },
-  activeMainTabText: {
-    color: "#1DA1F2",
-    fontWeight: "600",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-    marginBottom: 16,
+    color: '#000',
+    fontWeight: '500',
   },
   dashboardSection: {
     padding: 16,
-    backgroundColor: "white",
+    backgroundColor: '#f7f7f7',
+    alignItems: 'center',
   },
-  dashboardGrid: {
-    gap: 12,
-  },
-  dashboardRow: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  dashboardItem: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 12,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  dashboardLabel: {
-    marginTop: 8,
-    fontSize: 14,
-    color: "#536471",
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
   },
   stocksSection: {
     padding: 16,
-    backgroundColor: "white",
   },
-  stockInfo: {
-    flexDirection: "row",
-    backgroundColor: "#f8f8f8",
-    padding: 16,
+  stocksContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#f7f7f7',
     borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
   },
   stockColumn: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
   },
   stockDivider: {
     width: 1,
-    backgroundColor: "#ddd",
+    backgroundColor: '#e5e5e5',
     marginHorizontal: 16,
   },
   stockLabel: {
-    fontSize: 13,
-    color: "#666",
+    fontSize: 14,
+    color: '#687684',
     marginBottom: 4,
   },
   stockValue: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
+    fontWeight: '600',
+    color: '#000',
   },
   stockPeriod: {
     fontSize: 12,
-    color: "#666",
+    color: '#687684',
     marginTop: 4,
   },
   brandLogo: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginVertical: 6,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    marginVertical: 8,
   },
   brandName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
   },
   stockChange: {
-    fontSize: 12,
-    color: "#4CAF50",
-    marginTop: 2,
+    fontSize: 14,
+    color: '#4CAF50',
+    marginTop: 4,
   },
-  bottomTabsContainer: {
-    padding: 16,
-    backgroundColor: "white",
-  },
-  bottomTabsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-  },
-  bottomTab: {
-    flex: 1,
-    paddingVertical: 8,
-    marginHorizontal: 4,
-    borderRadius: 16,
-    backgroundColor: "#f8f8f8",
-    alignItems: "center",
-  },
-  bottomTabText: {
-    fontSize: 13,
-    color: "#333",
-  },
-  postsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 2,
-    padding: 2,
-  },
-  postImage: {
-    aspectRatio: 1,
-    resizeMode: 'cover',
-  },
-}); 
+});
+

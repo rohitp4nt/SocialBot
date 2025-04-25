@@ -61,15 +61,22 @@ export default function HomeScreen() {
   };
 
   const icons: Array<keyof typeof Ionicons.glyphMap> = [
-    "albums-outline",
-    "paper-plane-outline",
+    "grid-outline",
+    "hardware-chip-outline",
     "person-outline",
   ];
 
   const handleIconPress = (icon: string) => {
-    if (icon === 'paper-plane-outline') {
+    if (icon === 'grid-outline') {
+      router.push('/jobs');
+    }
+    if (icon === 'hardware-chip-outline') {
       router.push('/ai');
     }
+    if (icon === 'person-outline') {
+      router.push('./profile');
+    }
+
   };
 
   const renderStories = () => {
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 2,
     borderWidth: 2,
-    borderColor: "#E60023",
+    borderColor: "purple",
   },
   story: {
     borderRadius: 28,
