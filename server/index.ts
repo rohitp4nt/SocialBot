@@ -14,9 +14,8 @@ app.use(cors()); // Enable CORS for all origins (you can configure this if neede
 app.use(bodyParser.json());
 
 // Gemini API
-const GEMINI_API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-const GEMINI_API_KEY = 'AIzaSyAnvYBFHRJgW1PXH0zb6-APeaCo099r_e8'; // Use .env file to hide the key
+const GEMINI_API_URL= ''
+const GEMINI_API_KEY = ''
 
 // Chat endpoint
 app.post('/api/chat', async (req: Request, res: Response) => {
