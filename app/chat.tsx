@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   View,
   Text,
@@ -12,99 +12,127 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-} from "react-native"
-import { Feather } from "@expo/vector-icons"
+  ActivityIndicator,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
 
-// Define types for message data
+const GEMINI_API_KEY = "AIzaSyBTKa0NSN54JchhumSQn5kWkQvtGUYXl78";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
+const GEMINI_MODEL = "gemini-1.5-flash-latest";
+
 interface Message {
-  text: string
-  sender: "user" | "bot"
-  id: string
+  text: string;
+  sender: "user" | "bot";
+  id: string;
 }
 
 const ChatBot = () => {
-  const [message, setMessage] = useState<string>("")
+  const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([
-    { text: "Hello, how can I assist you?", sender: "bot", id: "initial-msg" }
-  ])
-  const [name, setName] = useState<string>("")
-  const [confirmName, setConfirmName] = useState<string>("")
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+    { text: "Hello, how can I assist you?", sender: "bot", id: "initial-msg" },
+  ]);
+  const [name, setName] = useState<string>("");
+  const [confirmName, setConfirmName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Send message to backend and get response
   const sendMessage = async (): Promise<void> => {
-    if (!message.trim() || isLoading) return
-    
-    const messageId = Date.now().toString()
-    const newUserMessage: Message = { 
-      text: message, 
-      sender: "user", 
-      id: `user-${messageId}` 
-    }
-    
-    setMessages(prevMessages => [...prevMessages, newUserMessage])
-    setMessage("")
-    setIsLoading(true)
+    if (!message.trim() || isLoading) return;
+
+    const userMessageText = message;
+    const messageId = Date.now().toString();
+    const newUserMessage: Message = {
+      text: userMessageText,
+      sender: "user",
+      id: `user-${messageId}`,
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    setMessage("");
+    setIsLoading(true);
+
+    const apiUrl = `${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
     try {
-      // Send user message to the backend and get response
-      const response = await fetch("http://192.168.1.8:5000/api/chat", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      })
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: userMessageText }],
+            },
+          ],
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch from server")
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {}
+        throw new Error(
+          `Failed to fetch from Gemini API: ${response.status} ${response.statusText}`
+        );
       }
 
-      const data = await response.json()
-      const botReply: Message = { 
-        text: data.reply, 
-        sender: "bot", 
-        id: `bot-${messageId}` 
-      }
+      const data = await response.json();
 
-      // Update messages with bot response
-      setMessages(prevMessages => [...prevMessages, botReply])
+      const botReplyText =
+        data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "Sorry, I couldn't get a response.";
+
+      const botReply: Message = {
+        text: botReplyText,
+        sender: "bot",
+        id: `bot-${messageId}`,
+      };
+
+      setMessages((prevMessages) => [
+        ...prevMessages.filter((msg) => msg.id !== "loading-msg"),
+        botReply,
+      ]);
     } catch (error) {
-      console.error("Error sending message:", error)
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg.id !== "loading-msg")
+      );
       Alert.alert(
-        "Connection Error", 
-        "There was an error connecting to the server. Please check your connection and try again."
-      )
+        "Connection Error",
+        `There was an error connecting to the Gemini API. Please check your connection and API key. Details: ${
+          (error as Error).message
+        }`
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const trySuggestion = (suggestion: string) => {
-    setMessage(suggestion)
-    // Uncomment to automatically send the suggestion:
-    // setTimeout(sendMessage, 100)
-  }
+    setMessage(suggestion);
+    // setTimeout(sendMessage, 100);
+  };
 
-  // Handle name submission
   const handleNameSubmit = () => {
     if (!name || !confirmName) {
-      Alert.alert("Missing Information", "Please enter and confirm your name.")
-      return
+      Alert.alert("Missing Information", "Please enter and confirm your name.");
+      return;
     }
-    
+
     if (name !== confirmName) {
-      Alert.alert("Name Mismatch", "The names you entered do not match. Please try again.")
-      return
+      Alert.alert(
+        "Name Mismatch",
+        "The names you entered do not match. Please try again."
+      );
+      return;
     }
-    
-    // Here you would typically send this to your backend
-    console.log("Name submitted:", name)
-    Alert.alert("Success", `Welcome, ${name}!`)
-  }
+
+    Alert.alert("Success", `Welcome, ${name}!`);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoid}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
@@ -137,17 +165,17 @@ const ChatBot = () => {
             />
           </View>
         </View>
-        
+
         <View style={styles.suggestionsContainer}>
-          <TouchableOpacity 
-            style={styles.suggestionButton} 
+          <TouchableOpacity
+            style={styles.suggestionButton}
             onPress={() => trySuggestion("Try James")}
           >
             <Text style={styles.suggestionText}>Try{"\n"}James</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.suggestionButton} 
+          <TouchableOpacity
+            style={styles.suggestionButton}
             onPress={() => trySuggestion("Try Russel Rutherford")}
           >
             <Text style={styles.suggestionText}>
@@ -155,8 +183,8 @@ const ChatBot = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.suggestionButton} 
+          <TouchableOpacity
+            style={styles.suggestionButton}
             onPress={() => trySuggestion("Try Franklin Alexander")}
           >
             <Text style={styles.suggestionText}>
@@ -167,25 +195,51 @@ const ChatBot = () => {
 
         <View style={styles.messagesContainer}>
           <FlatList
-            data={messages}
-            renderItem={({ item }) => (
-              <View 
-                style={[
-                  styles.messageContainer, 
-                  item.sender === "bot" ? styles.botMessage : styles.userMessage
-                ]}
-              >
-                <Text
+            data={
+              isLoading
+                ? [
+                    ...messages,
+                    { text: "...", sender: "bot", id: "loading-msg" },
+                  ]
+                : messages
+            }
+            renderItem={({ item }) => {
+              if (item.id === "loading-msg") {
+                return (
+                  <View
+                    style={[
+                      styles.messageContainer,
+                      styles.botMessage,
+                      styles.loadingIndicator,
+                    ]}
+                  >
+                    <ActivityIndicator size="small" color="#333" />
+                  </View>
+                );
+              }
+              return (
+                <View
                   style={[
-                    styles.messageText, 
-                    item.sender === "bot" ? styles.botMessageText : styles.userMessageText
+                    styles.messageContainer,
+                    item.sender === "bot"
+                      ? styles.botMessage
+                      : styles.userMessage,
                   ]}
                 >
-                  {item.text}
-                </Text>
-              </View>
-            )}
-            keyExtractor={item => item.id}
+                  <Text
+                    style={[
+                      styles.messageText,
+                      item.sender === "bot"
+                        ? styles.botMessageText
+                        : styles.userMessageText,
+                    ]}
+                  >
+                    {item.text}
+                  </Text>
+                </View>
+              );
+            }}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.messagesList}
             inverted={false}
             showsVerticalScrollIndicator={false}
@@ -212,18 +266,25 @@ const ChatBot = () => {
             editable={!isLoading}
           />
 
-          <TouchableOpacity 
-            style={[styles.iconButton, !message.trim() && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[
+              styles.iconButton,
+              !message.trim() && styles.disabledButton,
+            ]}
             onPress={sendMessage}
             disabled={!message.trim() || isLoading}
           >
-            <Feather name="plus" size={20} color={message.trim() ? "#000" : "#999"} />
+            <Feather
+              name="plus"
+              size={20}
+              color={message.trim() ? "#000" : "#999"}
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -289,7 +350,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 15,
     marginTop: 10,
-    marginBottom: 70, // Space for the message input
+    marginBottom: 70,
   },
   messagesList: {
     paddingVertical: 10,
@@ -376,6 +437,11 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.5,
   },
-})
+  loadingIndicator: {
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
-export default ChatBot
+export default ChatBot;
