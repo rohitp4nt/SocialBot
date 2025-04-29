@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ImageBackground,
   Platform,
   StatusBar,
 } from "react-native";
@@ -15,16 +16,22 @@ export default function CreateButton() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.bottomSection}>
-        <TouchableOpacity
-          style={styles.button}
-          // onPress={() => router.push('/chat')} // Removed navigation handler
-        >
-          <View style={styles.buttonInner}>
-            <Text style={styles.buttonText}>Create</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <ImageBackground
+        source={require("../../assets/images/3d.jpg")} // Make sure this path is correct
+        resizeMode="cover"
+        style={styles.background}
+      >
+        <View style={styles.bottomSection}>
+          <TouchableOpacity
+            style={styles.button}
+            // onPress={() => router.push('/chat')}
+          >
+            <View style={styles.buttonInner}>
+              <Text style={styles.buttonText}>Create</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -34,17 +41,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
   bottomSection: {
     position: "absolute",
-    bottom: 0,
+    bottom:0, // Push down a little for perfect roundness
     left: 0,
     right: 0,
-    height: "28%",
+    width: "100%",
+    height: 250, // Fixed height for clean semicircle
     backgroundColor: "#000",
-    borderTopLeftRadius: 130,
-    borderTopRightRadius: 130,
+    borderTopLeftRadius: 200,
+    borderTopRightRadius: 200,
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
   },
   button: {
     padding: 3,

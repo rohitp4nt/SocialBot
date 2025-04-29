@@ -4,7 +4,6 @@ import { ScrollView } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/Placeholder";
 import useStory from "@/store/useStory";
@@ -14,6 +13,9 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { FeedItem } from "@/components/FeedItem";
 import { useTabBar } from "@/contexts/TabBarContext";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+
 
 export default function HomeScreen() {
   const {
@@ -73,22 +75,15 @@ export default function HomeScreen() {
     }
   };
 
-  const icons: Array<keyof typeof Ionicons.glyphMap> = [
-    "grid-outline",
-    "hardware-chip-outline",
-    "person-outline",
+  const icons: { icon: any; route: "/jobs" | "/ai" | "./profile" }[] = [
+    { icon: require('../../assets/images/grid.png'), route: "/jobs" },
+    { icon: require('../../assets/images/chip.png'), route: "/ai" },
+    { icon: require('../../assets/images/person.png'), route: "./profile" },
   ];
-
-  const handleIconPress = (icon: string) => {
-    if (icon === "grid-outline") {
-      router.push("/jobs");
-    }
-    if (icon === "hardware-chip-outline") {
-      router.push("/ai");
-    }
-    if (icon === "person-outline") {
-      router.push("./profile");
-    }
+  
+  
+  const handleIconPress = (route: "/jobs" | "/ai" | "./profile") => {
+      router.push(route);
   };
 
   const renderStories = () => {
@@ -175,9 +170,9 @@ export default function HomeScreen() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <ThemedView style={styles.headerContainer}>
-          {icons.map((icon) => (
-            <Pressable key={icon} onPress={() => handleIconPress(icon)}>
-              <Ionicons name={icon} size={32} color="black" />
+          {icons.map(({ icon, route }) => (
+            <Pressable key={route} onPress={() => handleIconPress(route)}>
+              <Image source={icon} style={styles.icon} />
             </Pressable>
           ))}
         </ThemedView>
@@ -209,6 +204,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
+  },
+  icon: {
+    width: 32,
+    height: 32,
   },
   storiesContainer: {
     backgroundColor: "white",

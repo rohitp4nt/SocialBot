@@ -13,10 +13,11 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-const GEMINI_API_KEY = "AIzaSyBTKa0NSN54JchhumSQn5kWkQvtGUYXl78";
+const GEMINI_API_KEY = "AIzaSyAnvYBFHRJgW1PXH0zb6-APeaCo099r_e8";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 const GEMINI_MODEL = "gemini-1.5-flash-latest";
 
@@ -109,7 +110,6 @@ const ChatBot = () => {
 
   const trySuggestion = (suggestion: string) => {
     setMessage(suggestion);
-    // setTimeout(sendMessage, 100);
   };
 
   const handleNameSubmit = () => {
@@ -142,8 +142,10 @@ const ChatBot = () => {
         </View>
 
         <View style={styles.profileSection}>
-          <View style={styles.profileImage} />
-
+          <Image
+            source={{ uri: "https://freesvg.org/img/1538298822.png" }} // <-- your image URL
+            style={styles.profileImage}
+          />
           <View style={styles.inputsContainer}>
             <TextInput
               style={styles.nameInput}
@@ -345,6 +347,21 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#ddd",
   },
+  suggestionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 20,
+  },
+  suggestionButton: {
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 10,
+  },
+  suggestionText: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#333",
+  },
   messagesContainer: {
     flex: 1,
     width: "100%",
@@ -363,84 +380,49 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#4CAF50",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: "#000",
   },
   botMessage: {
     alignSelf: "flex-start",
     backgroundColor: "#f0f0f0",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
   },
   messageText: {
     fontSize: 16,
-    lineHeight: 20,
   },
   userMessageText: {
     color: "#fff",
   },
   botMessageText: {
-    color: "#333",
-  },
-  suggestionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    marginBottom: 10,
-    width: "100%",
-  },
-  suggestionButton: {
-    backgroundColor: "#f0f0f0",
-    padding: 10,
-    borderRadius: 10,
-    width: "30%",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: 60,
-  },
-  suggestionText: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#333",
+    color: "#000",
   },
   messageInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
+    paddingHorizontal: 10,
     position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#f9f9f9",
+    width: "100%",
+    backgroundColor: "#fff",
+    paddingVertical: 8,
   },
   iconButton: {
-    padding: 10,
-    marginHorizontal: 2,
+    padding: 8,
   },
   messageInput: {
     flex: 1,
     height: 40,
-    paddingHorizontal: 10,
-    color: "#333",
-    fontSize: 16,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    marginHorizontal: 10,
+    color: "#000",
   },
   disabledButton: {
     opacity: 0.5,
   },
   loadingIndicator: {
-    padding: 10,
     alignItems: "center",
-    justifyContent: "center",
   },
 });
 
