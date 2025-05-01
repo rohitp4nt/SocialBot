@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons"; // If you're planning to use icons
 
 export default function ProfileLayout() {
   return (
@@ -7,9 +7,9 @@ export default function ProfileLayout() {
       <Stack.Screen
         name="[id]"
         options={{
-          headerShown: false
+          headerShown: false, 
         }}
       />
     </Stack>
   );
-} 
+}

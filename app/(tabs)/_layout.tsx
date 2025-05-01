@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { StyleSheet, Animated } from "react-native";
+import { StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
 
 import { HapticTab } from "@/components/HapticTab";
@@ -18,6 +18,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarShowLabel: false,
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarInactiveTintColor: '#1A1A1A',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
@@ -26,24 +27,24 @@ export default function TabLayout() {
           position: "absolute",
           overflow: "hidden",
           elevation: 0,
-          height: 60,
+          height: 70,
           borderTopWidth: 0,
-          backgroundColor: 'transparent',
-          shadowColor: 'transparent',
+          backgroundColor: "transparent",
+          shadowColor: "transparent",
           transform: [{ translateY: translateY }],
+          paddingBottom: 10, // adds padding for icons to be vertically centered
+          paddingTop: 10,
         },
         tabBarItemStyle: {
-          height: 60,
-          paddingVertical: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
         },
-        tabBarInactiveTintColor: '#1A1A1A',
         tabBarBackground: () => (
           <BlurView
             intensity={90}
-            style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255, 255, 255, 0.8)' }]}
             tint="light"
+            style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.8)' }]}
           />
         ),
       }}
@@ -53,7 +54,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} weight="bold" />
+            <IconSymbol size={30} name="house.fill" color={color} weight="bold" />
           ),
         }}
       />
@@ -62,12 +63,7 @@ export default function TabLayout() {
         options={{
           title: "Search",
           tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name="magnifyingglass.circle.fill"
-              color={color}
-              weight="bold"
-            />
+            <IconSymbol size={30} name="magnifyingglass.circle.fill" color={color} weight="bold" />
           ),
         }}
       />
@@ -76,7 +72,7 @@ export default function TabLayout() {
         options={{
           title: "Add",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="plus.circle.fill" color={color} weight="bold" />
+            <IconSymbol size={36} name="plus.circle.fill" color={color} weight="bold" />
           ),
         }}
       />
@@ -85,7 +81,7 @@ export default function TabLayout() {
         options={{
           title: "Explore",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="play.circle.fill" color={color} weight="bold" />
+            <IconSymbol size={30} name="play.circle.fill" color={color} weight="bold" />
           ),
         }}
       />
@@ -94,7 +90,7 @@ export default function TabLayout() {
         options={{
           title: "Notification",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="bell.badge.circle" color={color} weight="bold" />
+            <IconSymbol size={30} name="bell.badge.circle" color={color} weight="bold" />
           ),
         }}
       />

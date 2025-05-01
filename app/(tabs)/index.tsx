@@ -4,7 +4,6 @@ import { ScrollView } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { blurhash } from "@/constants/Placeholder";
 import useStory from "@/store/useStory";
@@ -12,12 +11,27 @@ import useFeed from "@/store/useFeed";
 import { useEffect, useRef, useState } from "react";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { FeedItem } from "@/components/FeedItem";
-import { useTabBar } from '@/contexts/TabBarContext';
-import { router } from 'expo-router';
+import { useTabBar } from "@/contexts/TabBarContext";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+
 
 export default function HomeScreen() {
-  const { items: stories, isLoading: storiesLoading, error: storiesError, hasMore: hasMoreStories, loadStories } = useStory();
-  const { items: feedItems, isLoading: feedLoading, error: feedError, hasMore: hasMoreFeed, loadFeed } = useFeed();
+  const {
+    items: stories,
+    isLoading: storiesLoading,
+    error: storiesError,
+    hasMore: hasMoreStories,
+    loadStories,
+  } = useStory();
+  const {
+    items: feedItems,
+    isLoading: feedLoading,
+    error: feedError,
+    hasMore: hasMoreFeed,
+    loadFeed,
+  } = useFeed();
   const scrollViewRef = useRef<ScrollView>(null);
   const feedScrollViewRef = useRef<ScrollView>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -38,7 +52,8 @@ export default function HomeScreen() {
     if (storiesLoading || !hasMoreStories) return;
 
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isEndReached = layoutMeasurement.width + contentOffset.x >= contentSize.width - 20;
+    const isEndReached =
+      layoutMeasurement.width + contentOffset.x >= contentSize.width - 20;
 
     if (isEndReached && !isLoadingMore) {
       setIsLoadingMore(true);
@@ -47,12 +62,12 @@ export default function HomeScreen() {
   };
 
   const handleFeedScroll = (event: any) => {
-
     handleTabBarScroll(event);
     if (feedLoading || !hasMoreFeed) return;
 
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+    const isEndReached =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
 
     if (isEndReached && !isLoadingMore) {
       setIsLoadingMore(true);
@@ -60,23 +75,15 @@ export default function HomeScreen() {
     }
   };
 
-  const icons: Array<keyof typeof Ionicons.glyphMap> = [
-    "grid-outline",
-    "hardware-chip-outline",
-    "person-outline",
+  const icons: { icon: any; route: "/jobs" | "/ai" | "./profile" }[] = [
+    { icon: require('../../assets/images/grid.png'), route: "/jobs" },
+    { icon: require('../../assets/images/chip.png'), route: "/ai" },
+    { icon: require('../../assets/images/person.png'), route: "./profile" },
   ];
-
-  const handleIconPress = (icon: string) => {
-    if (icon === 'grid-outline') {
-      router.push('/jobs');
-    }
-    if (icon === 'hardware-chip-outline') {
-      router.push('/ai');
-    }
-    if (icon === 'person-outline') {
-      router.push('./profile');
-    }
-
+  
+  
+  const handleIconPress = (route: "/jobs" | "/ai" | "./profile") => {
+      router.push(route);
   };
 
   const renderStories = () => {
@@ -89,9 +96,9 @@ export default function HomeScreen() {
     }
 
     return (
-      <ScrollView 
+      <ScrollView
         ref={scrollViewRef}
-        horizontal={true} 
+        horizontal={true}
         showsHorizontalScrollIndicator={false}
         onScroll={handleStoriesScroll}
         scrollEventThrottle={16}
@@ -112,7 +119,7 @@ export default function HomeScreen() {
           </Pressable>
         ))}
         {!hasMoreStories && stories.length > 0 && (
-          <Animated.View 
+          <Animated.View
             entering={FadeIn.duration(300)}
             style={styles.endContainer}
           >
@@ -163,12 +170,9 @@ export default function HomeScreen() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <ThemedView style={styles.headerContainer}>
-          {icons.map((icon) => (
-            <Pressable 
-              key={icon} 
-              onPress={() => handleIconPress(icon)}
-            >
-              <Ionicons name={icon} size={32} color="black" />
+          {icons.map(({ icon, route }) => (
+            <Pressable key={route} onPress={() => handleIconPress(route)}>
+              <Image source={icon} style={styles.icon} />
             </Pressable>
           ))}
         </ThemedView>
@@ -201,14 +205,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
   },
+  icon: {
+    width: 32,
+    height: 32,
+  },
   storiesContainer: {
     backgroundColor: "white",
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
   },
   storiesScrollContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
     gap: 12,
@@ -217,8 +225,8 @@ const styles = StyleSheet.create({
   storyItem: {
     width: 64,
     height: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   storyWrapper: {
     width: 64,
@@ -245,10 +253,9 @@ const styles = StyleSheet.create({
   },
   feedContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
-  feedContentContainer: {
-  },
+  feedContentContainer: {},
   feedErrorContainer: {
     padding: 20,
     alignItems: "center",

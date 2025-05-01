@@ -36,7 +36,8 @@ export default function RootLayout() {
           <Stack.Screen name="jobs" options={{ headerShown: false }} />
           <Stack.Screen name="ai" options={{ headerShown: false }} />
           <Stack.Screen name="chat" options={{ headerShown: false }} />
-
+          <Stack.Screen name="profile/[]" options={{ headerShown: false }} />
+          <Stack.Screen name="profes" options={{ headerShown: false }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
